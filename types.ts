@@ -1,0 +1,30 @@
+export type UUID = string
+
+export interface Reactive<T> {
+    value: T
+    subscribe: (cb: (e: Event) => void) => void
+    trigger: () => boolean
+}
+export type ReactiveItem = Reactive<any>
+/**
+ * 
+ */
+//export type Item<T> = Reactive<T>
+
+//export type ItemList<T> = Record<string, Reactive<T>>
+
+export type UseStoreMethod = <T>(key: string,def?:T) => Reactive<T>
+
+export interface ItemWithUid<T> {
+    uid: string,
+    item: Reactive<T>
+}
+
+export type RemoveUid<T> = Omit<T, 'uid'>
+/**
+ * Represents an item modeled after \<T\>.   
+ * This helper removes uid and all functions from type.
+ */
+export type ListItem<T> = RemoveUid<NonFunctionProperties<T>>
+type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
+export type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
