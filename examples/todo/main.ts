@@ -47,7 +47,6 @@ while (true) {
     
     console.log('To-Do\'s:')
     todos.forEach((todo, i) => {
-        //console.log(i)
         todo.print(i + 1)
     })
 
