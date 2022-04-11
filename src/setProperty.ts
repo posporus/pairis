@@ -1,26 +1,21 @@
 import { Model } from './Model.ts'
-//import { usePair } from './usePair.ts'
-import type { Reactive, UseStoreMethod } from '../types.ts'
-import { isOneTo, isToMany, isToOne } from './relationships.ts'
-import { modelStack } from './modelStack.ts'
-import { Store} from './store.ts'
-
+import { PairisStore } from './storage.ts'
 
 /**
- *  b
+ * SETTER for property of model
  * @param target 
  * @param name 
  * @param value 
  * @returns 
  */
-const setProperty = <T extends Model> (target: T, name: keyof T, value: any, store: Store) => {
+//TODO: value shouldn't be any
+const setProperty = <T extends Model> (target: T, name: keyof T, value: any, store: PairisStore) => {
 
     if (name === 'uid') {
         //TODO: maybe check if uid is valid?
         target.uid = value
         return true
     }
-
     if (typeof name !== 'string') {
         //console.error('SETTER: PROPERTYNAME IS NO STRING')
         return false
@@ -30,16 +25,18 @@ const setProperty = <T extends Model> (target: T, name: keyof T, value: any, sto
 
     const item = store.use<Record<string, unknown>>(uid)
 
-    if (isOneTo(name)) {
-        const foreignObject = isModel(value) ? value : (modelStack.findBySingular(name) || Model).use().set(value)
+    if (store.modelStack.isOneTo(name)) {
+        const foreignObject = isModel(value) ? value : (store.modelStack.findBySingular(name) || Model).use().set(value)
 
-        updateItem(item, {
+        item.value = {
+            ...item.value,
             [name]: foreignObject.uid
-        })
+        }
+       
         return true
     }
 
-    if (isToMany(name)) {
+    if (store.modelStack.isToMany(name)) {
 
         const foreignPropName = target.modelClass.singularName
 
@@ -50,11 +47,10 @@ const setProperty = <T extends Model> (target: T, name: keyof T, value: any, sto
                 foreignVal[foreignPropName] = target
 
             })
-        return true
-        
+        return true 
 
     }
-    if (isToOne(name)) {
+    if (store.modelStack.isToOne(name)) {
 
         const foreignPropName = target.modelClass.singularName
 
@@ -62,30 +58,17 @@ const setProperty = <T extends Model> (target: T, name: keyof T, value: any, sto
         
         return true
     }
-    
-    updateItem(item, {
+
+    item.value = {
+        ...item.value,
         [name]: value
-    })
+    }
 
     return true
 
 }
 
-
 const isModel = (model: any): model is Model => model instanceof Model
-
-
-
-
-const updateItem = <T> (item: Reactive<T>, values: Partial<T>) => {
-    item.trigger()
-    item.value = {
-        ...item.value,
-        ...values
-    }
-    return item
-}
-
 
 export {
     setProperty

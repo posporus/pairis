@@ -1,20 +1,14 @@
 import { assertEquals, assert } from "https://deno.land/std@0.77.0/testing/asserts.ts";
 import { v4 } from "https://deno.land/std@0.127.0/uuid/mod.ts"
-
-//import { ReactiveStore, persist } from '../src/store.ts'
 import { Model, store } from '../src/Model.ts'
-//import { store } from '../src/usePair.ts'
 
-import { modelStack, models } from '../src/modelStack.ts'
+import { ListItem } from '../types.ts'
 
-import { delay } from 'https://deno.land/x/delay@v0.2.0/mod.ts';
 
 Deno.test({
     name: "simple animal model",
-
     async fn (t) {
         store.clear()
-        //const store = new ReactiveStore({ persistent: false })
 
         class Animal extends Model {
             static list = 'animals'
@@ -32,13 +26,12 @@ Deno.test({
         await t.step('set single property', t => {
             const cow = Animal.use()
             cow.name = 'cow'
-
             assertEquals(cow.legs, 4)
             assertEquals(cow.name, 'cow')
         })
 
         await t.step('sample check: store["animals"] should have 1 items', t => {
-            assertEquals(store.get('animals')?.value.length, 1)
+            assertEquals(store.get<string[]>('animals')?.length, 1)
         })
 
         await t.step('change standard property', t => {
@@ -77,8 +70,7 @@ Deno.test({
             })
 
             await t.step('should also be in store', t => {
-                //console.log('uuid:', bird.uid)
-                assertEquals(store.get(bird.uid)?.value.name, 'bird')
+                assertEquals(store.get<ListItem<Animal>>(bird.uid)?.name, 'bird')
             })
 
         })
@@ -91,27 +83,28 @@ Deno.test({
         })
 
         await t.step('store should have key animals as array', t => {
-            assert(Array.isArray(store.get('animals')?.value))
+            assert(Array.isArray(store.get('animals')))
 
         })
 
         await t.step('animals list should have 6 entrys', t => {
-            assertEquals(store.get('animals')?.value.length, 6)
+            assertEquals(store.get<string[]>('animals')?.length, 6)
         })
 
 
         await t.step('animals[1]', async t => {
-            const uuid = store.get('animals')?.value[1]
+            const animals = store.get<string[]>('animals')
+            const uuid = animals ? animals[1] : ''
             await t.step('animals[1] should be valid uuid v4', t => {
                 assert(v4.validate(uuid))
             })
 
-            const item = store.get(uuid)?.value
+            const item = store.get<ListItem<Animal>>(uuid)
             await t.step('there should be an item with that uuid', t => {
                 assert(item)
             })
             await t.step('that item should have a name', t => {
-                assert(item.name)
+                assert(item?.name)
             })
         })
 
@@ -134,7 +127,7 @@ Deno.test({
         //  #Testing
         await t.step('set ', t => {
             const hammer = Tool.use().set({ name: 'hammer', purpose: 'nailing' })
-            assertEquals(store.get(hammer.uid)?.value.name, 'hammer')
+            assertEquals(store.get<ListItem<Tool>>(hammer.uid)?.name, 'hammer')
 
         })
 
@@ -180,21 +173,19 @@ Deno.test({
             plants.forEach(plant => {
                 Plant.use().set(plant)
             })
-            assertEquals(store.get('plants')?.value.length, plants.length)
-            //console.log(store)
+            assertEquals(store.get<string[]>('plants')?.length, plants.length)
         })
 
         await t.step('sample check: store["plants"] should have 5 items', t => {
-            assertEquals(store.get('plants')?.value.length, 5)
+            assertEquals(store.get<string[]>('plants')?.length, 5)
         })
 
-        //console.log(store)
         await t.step('retrieving plants with all()', t => {
             assertEquals(Plant.all().map(plant => ({ name: plant.name, species: plant.species })), plants)
         })
 
         await t.step('sample check: store["plants"] should have 5 items', t => {
-            assertEquals(store.get('plants')?.value.length, 5)
+            assertEquals(store.get<string[]>('plants')?.length, 5)
         })
 
         await t.step('retrieving plant(s) with where() (1) targeting 1 entry', t => {
@@ -210,12 +201,8 @@ Deno.test({
         })
 
         await t.step('sample check: store["plants"] should have 5 items', t => {
-            assertEquals(store.get('plants')?.value.length, 5)
+            assertEquals(store.get<string[]>('plants')?.length, 5)
         })
-        /* await t.step('where uid', t => {
-            console.log(Plant.where('uid',Plant.all()[0].uid))
-        }) */
-
 
     }
 })
@@ -260,22 +247,19 @@ Deno.test({
         await t.step('new vehicle and set foreign driver', t => {
             const a8 = Vehicle.use().set({ brand: 'Audi', type: VehicleType.CAR })
             a8.driver.name = 'Sasha'
-            //console.log('A8  ! ! !',a8)
             assertEquals(a8.brand, 'Audi')
             assertEquals(a8.driver.name, 'Sasha')
 
         })
 
-        /*  await t.step('new vehicle and set foreign driver', t => {
+         await t.step('new vehicle and set foreign driver', t => {
              const vw = Vehicle.use().set({ brand: 'VW', type: VehicleType.CAR })
              const noah = Driver.use().set({ name: 'noah' })
              vw.driver = noah
              assertEquals(vw.brand, 'VW')
-             console.log('DRIVER',vw.driver)
              assertEquals(vw.driver.name, 'noah')
  
-         }) */
-        //console.log(store)
+         })
 
     }
 })
@@ -293,11 +277,13 @@ Deno.test({
             street!: string
             flatmates!: Flatmate[]
         }
+        WG.introduce()
         class Flatmate extends Model {
             static list = 'flatmates'
             name!: string
-            //wg = Flatmate.hasOne(WG)
+            wg!: Flatmate | undefined
         }
+        Flatmate.introduce()
 
         const flatmates = [
             Flatmate.use().set({ name: 'Mika' }),
@@ -314,97 +300,11 @@ Deno.test({
             assertEquals(wg.flatmates.length, 3)
 
         })
-        /* await t.step('flatmates[0] should have a wg "Chaos"', t => {
+        await t.step('flatmates[0] should have a wg "Chaos"', t => {
 
-            assertEquals(flatmates[0].wg.name, 'Chaos')
+            assertEquals(flatmates[0].wg?.name, 'Chaos')
 
-        }) */
-        //console.log(JSON.stringify(store,null, '\t'),store)
-        //console.dirxml(store)
-
+        })
+        
     }
 })
-
-/* Deno.test({
-    name: "models with simple (hasMany) relationship",
-
-    async fn (t) {
-        store.clear()
-
-        //Things are made of materials
-        class Material extends Model {
-            static list = 'materials'
-            name!: string
-        }
-        class Thing extends Model {
-            static list = 'things'
-            name!: string
-            materials = Thing.hasMany(Material)
-        }
-
-        const wood = Material.use().set({name:'Wood'})
-        const metal = Material.use().set({name:'Metal'})
-
-        const chair = Thing.use().set({name:'Chair', materials:[wood,metal]})
-
-        //  #Testing
-        await t.step('chair should hav 2 materials', t => {
-
-            assertEquals(chair.materials.length, 2)
-
-        })
-        //console.log(JSON.stringify(store,null, '\t'),store)
-        console.dirxml(store)
-
-    }
-}) */
-
-/* Deno.test({
-
-    name: "persistence",
-
-    async fn (t) {
-
-        self.localStorage.clear()
-
-        const store = new ReactiveStore({ persistent: true })
-
-        @persist(store)
-        class User extends Model {
-            static list = 'users'
-            name!: string
-
-        }
-
-        //  #Testing
-        await t.step('set name', t => {
-            const hexe123 = User.use().set({ name: 'hexe123' })
-            assertEquals(hexe123.name, 'hexe123')
-        })
-
-        await t.step('localStorage should have key "users"', t => {
-            assert(self.localStorage.getItem('users'))
-        })
-
-        await t.step('item with key "users" should be an Array', t => {
-            const usersList = JSON.parse(self.localStorage.getItem('users') || '')
-            assert(Array.isArray(usersList))
-        })
-
-        await t.step('item with key "users" should have one entry', t => {
-            const usersList = JSON.parse(self.localStorage.getItem('users') || '')
-            assertEquals(usersList.length, 1)
-        })
-
-        await t.step('users list entry should be a valid uuid v4', async t => {
-            const usersList = JSON.parse(self.localStorage.getItem('users') || '')
-            const uuid = usersList[0]
-            assert(v4.validate(uuid))
-
-            await t.step('localStorage should have a key with that uuid', t => {
-                assert(self.localStorage.getItem(uuid))
-            })
-        })
-
-    }
-}) */

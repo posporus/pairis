@@ -1,10 +1,9 @@
 import { Model } from './src/Model.ts'
-import { Store, persist } from './src/store.ts'
-import { reactive } from './src/reactive.ts'
+import { PairisStore } from './src/storage.ts'
+import { persist } from './src/decorators.ts'
 
 export {
     Model,
-    Store,
-    persist,
-    reactive
+    PairisStore,
+    persist
 }

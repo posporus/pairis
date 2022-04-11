@@ -1,15 +1,20 @@
 import { Model } from './Model.ts'
 import { uuid } from './uid.ts'
+import { PairisStore } from './storage.ts'
 import type { ListItem } from '../types.ts'
-import { modelStack } from './modelStack.ts'
-import { Store } from './store.ts'
 
-import { isOneTo, isToMany, isToOne } from './relationships.ts'
-
-const getProperty = <T extends Model> (target: T, name: keyof T, store: Store) => {
+/**
+ * GETTER for property of model
+ * @param target 
+ * @param name 
+ * @param store 
+ * @returns 
+ */
+const getProperty = <T extends Model> (target: T, name: keyof T, store: PairisStore) => {
 
     if (name === 'uid')
         return target.uid || (target.uid = uuid())
+
     //this also generates a uid target has none.
     const uid = target.uid
 
@@ -31,35 +36,35 @@ const getProperty = <T extends Model> (target: T, name: keyof T, store: Store) =
     const storedProp = storedItem.value && Object.hasOwn(storedItem.value, name)
         ? storedItem.value[name as keyof ListItem<T>] : undefined
 
-
     //is foreign(one)?
     //-> name = anyModelName.toLowercase()
     //in case is foreign + uid is stored
-    if (isOneTo(name)) {
-        const foreignModel = modelStack.findBySingular(name)
-        //console.log('isOneTo', name, foreignModel?.name, storedProp)
+    if (store.modelStack.isOneTo(name)) {
+        const foreignModel = store.modelStack.findBySingular(name)
 
         if (foreignModel && typeof storedProp !== 'undefined' && typeof storedProp === 'string')
             return foreignModel.use(storedProp)
 
         if (foreignModel && typeof storedProp === 'undefined') {
- 
+            //TODO: whatever nn means
             const nn = foreignModel.use()
-            //console.log(nn.uid)
 
-            //console.log('target name:', target)
+            const temp = store.use<Record<string, unknown>>(uid)
+            temp.value = {
+                ...temp.value,
+                [name]: nn.uid
+            }
 
-            if (store.update(uid, { [name]: nn.uid })) return nn
-
+            return nn
         }
 
         return undefined
 
     }
 
-    if (isToMany(name)) {
+    if (store.modelStack.isToMany(name)) {
         const singularPropName = target.modelClass.singularName
-        const foreignModel = modelStack.findByPlural(name)
+        const foreignModel = store.modelStack.findByPlural(name)
 
         if (singularPropName && foreignModel) {
 
@@ -71,11 +76,10 @@ const getProperty = <T extends Model> (target: T, name: keyof T, store: Store) =
         return []
     }
 
-    if (isToOne(name)) {
+    if (store.modelStack.isToOne(name)) {
         const remove$ = name.replace('$', '')
-        //console.log('isToOne', name, remove$, uid)
         const propName = target.modelClass.singularName
-        const foreignModel = modelStack.findBySingular(remove$)
+        const foreignModel = store.modelStack.findBySingular(remove$)
 
         if (propName && foreignModel) {
             const lookups = store.lookup(foreignModel?.list, propName, uid)
@@ -88,18 +92,10 @@ const getProperty = <T extends Model> (target: T, name: keyof T, store: Store) =
 
     const instanceProp = target[name]
 
-
-
     return storedProp !== undefined ? storedProp : instanceProp
 
 }
 
-
-/**
- * figures out weather property has a foreign item or not.
- * @param property 
- * @returns 
- */
 
 export {
     getProperty

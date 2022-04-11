@@ -1,28 +1,23 @@
 import { NonFunctionProperties } from '../types.ts'
 import { getProperty } from './getProperty.ts'
 import { setProperty } from './setProperty.ts'
-import { modelStack } from './modelStack.ts'
+import { PairisStore } from './storage.ts'
 
-import { Store } from './store.ts'
+//import { Store } from './store.ts'
 
-export const store = new Store()
+export const store = new PairisStore()
 
 class Model {
 
     uid!: string
     modelClass!: typeof Model
-    
+
     subscribe!: (cb: (e: Event) => void) => void
     trigger!: () => boolean
 
-    static list: string
+    static list = '_'
 
-    static store:Store = store
-
-
-    static uidList<T extends typeof Model> (this: T) {
-        return this.list ? this.store.use<string[]>(this.list, []).value : []
-    }
+    static store: PairisStore = store
 
     /**
      * Load an item with this model. If no uid is specified, a new item is generated.
@@ -39,8 +34,7 @@ class Model {
         }
         const key = instance.uid
 
-        //push to list if key is not extisting
-        if (!this.uidList().includes(key)) this.uidList().push(key)
+        this.store.useList(this.list).push(key)
 
         return instance
 
@@ -57,7 +51,8 @@ class Model {
 
     //TODO:
     static all<T extends typeof Model> (this: T): InstanceType<T>[] {
-        return this.uidList().map(uid => this.use(uid))
+        const list = this.store.useList(this.list)
+        return list.entries.map(uid => this.use(uid))
     }
     //TODO:
     static is<T extends typeof Model> (this: T, propertyName: keyof NonFunctionProperties<InstanceType<T>>, value: any) {
@@ -69,7 +64,6 @@ class Model {
     static where<T extends typeof Model> (this: T, ...args: any[]) {
         const propertyName = args[0]
         const value = args[1]
-        //console.log('WHERE', this, propertyName, value)
         return this.is(propertyName, value)
     }
 
@@ -95,7 +89,7 @@ class Model {
      * @param this 
      */
     static introduce<T extends typeof Model> (this: T) {
-        modelStack.add(this)
+        store.modelStack.push(this)
     }
 
     //TODO: user should be able to change singular and plural names
@@ -116,10 +110,10 @@ class Model {
 
 }
 
-const proxy = <T extends typeof Model> (instance: InstanceType<T>, store: Store) => {
+const proxy = <T extends typeof Model> (instance: InstanceType<T>, store: PairisStore) => {
     return new Proxy(instance, {
         get: (target, name) => getProperty<InstanceType<T>>(target, name as keyof InstanceType<T>, store),
-        set: (target, name, value) => { return setProperty<InstanceType<T>>(target, name as keyof InstanceType<T>, value, store)}
+        set: (target, name, value) => { return setProperty<InstanceType<T>>(target, name as keyof InstanceType<T>, value, store) }
     })
 }
 
