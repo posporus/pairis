@@ -1,6 +1,9 @@
 # Pairis
-Pairis lets you define models with object relational behavior. Under the hood
-it uses key:value pairs to process the data.
+<!-- Pairis is a simple alternative for using databases and ORMs in small-scale projects. It allows you to define models via TypeScript classes. All the data is stored into key:value pairs. This makes Pairis benificial to use it together with key:value  -->
+
+> This is at the moment only a kind of prove of concept. I am looking forward to any suggestions and help. Let me hear what you think about the idea.
+
+Pairis is a simple data storage alternative to traditional databases for smaller projects. Data structures can be modeled as TypeScript classes with properties, methods, getters and setters. The fact that all data is stored in key/value pairs makes Pairis perfect for use with, for example, localStorage. However, due to its modular design, storage types can be easily changed at any stage of development.
 
 ## Basic usage
 ```ts
@@ -51,7 +54,7 @@ Animal.introduce()
 ```
 #### Naming Conventions
 
-Relationships are defined and guessed by property names. Therefore it is very important to retain some naming convetions.
+Relationships are defined and guessed by property names. Therefore it is important to retain some naming convetions.
 
 - Propertys that are pointing to a single dataset (One-To) always have the same name as the class they are pointing to, in lowercase.
 - Propertys that are pointing to more than one datasets (To-Many) have the same name as the list name of the model they are pointing to.
@@ -94,35 +97,36 @@ window.close() //window.opened => false
 
 
 ### Under the hood
-Pairis stores all the data into key:value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array.
+Pairis stores all the data into key/value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array.
 
 ```JSON
 {
-    "wgs":["uid4","uid5"],
+    "homes":["uid4","uid5"],
 
     "uid4":{"name":"CoolWG","city":"Berlin"},
-    "uid5":{"name":"NiceWG","city":"London"},
+    "uid5":{"name":"NiceHouse","city":"London"},
 
     "flatmates":["uid1","uid2","uid3"],
 
-    "uid1":{"name":"Robin", "wg":"uid4"},
-    "uid2":{"name":"Luca", "wg":"uid4"},
-    "uid3":{"name":"Aron","wg":"uid5"},
+    "uid1":{"name":"Robin", "home":"uid4"},
+    "uid2":{"name":"Luca", "home":"uid4"},
+    "uid3":{"name":"Aron","home":"uid5"},
 }
 
 ```
 
 
 ## Persistence
-Pairis comes with...
 
 ```ts
-const store = new PairisLS()
+const store = new PairisStore(localStorage)
+
+@persist(store)
 class Car extends Model {
-    static store = store
+    //...
 }
 ```
-## Decorators [pending]
+<!-- ## Decorators [pending]
 If you want to keep your model clean, you can use Class Decorators instead of static proerties.
 ```ts
 @list('plants')
@@ -135,4 +139,4 @@ class Plant extends Model {
 ```
 
 ## Extending Pairis
-...
+... -->
