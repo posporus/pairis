@@ -57,9 +57,10 @@ class PairisStore {
      */
     delete (key: string) {
         //TODO: deleting from lists not yet implemented.
-        //Should also delete UIDs from foreign properties.
+        //Should also delete UIDs from foreign properties. <- *should happen in Model Class
         this.storage?.removeItem(key) && this.cache.delete(key)
         this.eventStack.get(key)?.trigger()
+        this.eventStack.delete(key)
     }
 
     /**
@@ -143,14 +144,20 @@ class PairisStore {
         const push = (uid: string) => {
             item.push(uid)
             this.set(listName, item)
-            event.trigger()
+            //event.trigger()
         }
+
+        const remove = (uid: string) => {
+            this.set(listName, item.filter(val => val !== uid))
+        }
+
         const getList = () => this.get(listName)
 
         return Object.defineProperty({
             trigger: event.trigger,
             subscribe: event.subscribe,
-            push
+            push,
+            remove
         } as unknown, 'entries', {
             get: function () {
                 return getList()

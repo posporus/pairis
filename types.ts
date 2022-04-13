@@ -35,6 +35,8 @@ export interface ReactiveList {
     trigger: () => void,
     subscribe: () => void,
     push: (val: string) => void,
+
+    remove: (uid: string) => void,
     entries: []
 
 }

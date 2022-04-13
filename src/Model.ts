@@ -108,6 +108,17 @@ class Model {
         return this.list.toLowerCase() as keyof Model
     }
 
+    delete() {
+        //delete stored item
+        store.delete(this.uid)
+        //remove from list
+        const list  = store.useList(this.modelClass.list)
+        list.remove(this.uid)
+        //remove from foreign props
+        //this.uid = undefined
+
+    }
+
 }
 
 const proxy = <T extends typeof Model> (instance: InstanceType<T>, store: PairisStore) => {
