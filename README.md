@@ -1,7 +1,12 @@
+> :warning: This is at a very early stage and more a **prove of concept**. I am looking forward to any suggestions and help.
+<img align="right" src="https://user-images.githubusercontent.com/2838229/163214668-9aa86e12-c3ec-4a63-b389-b6f23a46c0e2.png" height="180px" alt="pairs socks">
+
 # Pairis
 <!-- Pairis is a simple alternative for using databases and ORMs in small-scale projects. It allows you to define models via TypeScript classes. All the data is stored into key:value pairs. This makes Pairis benificial to use it together with key:value  -->
 
-> :warning: This is at a very early stage and more a **prove of concept**. I am looking forward to any suggestions and help.
+
+
+
 
 Pairis is a simple data storage alternative to traditional databases for smaller projects. Data structures can be modeled like ordinary TypeScript classes with properties, methods, getters and setters, with the difference that all properties are automatically saved. When changes are made, events are automatically triggered, which in turn can be subscribed to. The fact that all data is stored in key/value pairs makes Pairis perfect for use with localStorage, for example. However, due to its modular design, storage types can be easily changed at any stage of development.
 
