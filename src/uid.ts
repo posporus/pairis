@@ -1,4 +1,4 @@
-import { v4 } from "https://deno.land/std@0.127.0/uuid/mod.ts"
+import { v4 } from '../deps.ts'
 
 /**
  * Determines if property is a valid UID.
