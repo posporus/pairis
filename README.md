@@ -1,5 +1,6 @@
 > :warning: This is at a very early stage and more a **prove of concept**. I am looking forward to any suggestions and help.
-<img align="right" src="https://user-images.githubusercontent.com/2838229/163214668-9aa86e12-c3ec-4a63-b389-b6f23a46c0e2.png" height="180px" alt="pairs socks">
+
+<img align="right" src="https://user-images.githubusercontent.com/2838229/165339683-1ccd32bf-9083-4166-bd22-fbd99b0ac218.png" height="147px" alt="pairs socks">
 
 # Pairis
 <!-- Pairis is a simple alternative for using databases and ORMs in small-scale projects. It allows you to define models via TypeScript classes. All the data is stored into key:value pairs. This makes Pairis benificial to use it together with key:value  -->
