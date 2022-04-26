@@ -89,7 +89,7 @@ class Model {
      * @param this 
      */
     static introduce<T extends typeof Model> (this: T) {
-        store.modelStack.push(this)
+        this.store.modelStack.push(this)
     }
 
     //TODO: user should be able to change singular and plural names
