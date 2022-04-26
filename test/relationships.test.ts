@@ -137,7 +137,7 @@ Deno.test({
 
         await t.step('set one-to (3) -  with new item', t => {
             luca.home = Home.use()
-            assert(v4.validate(store.get<{home:string}>(luca.uid)?.home || ''))
+            assert(v4.validate(store.get<{ home: string }>(luca.uid)?.home || ''))
         })
 
         await t.step('get one-to (3)', t => {
@@ -165,6 +165,15 @@ Deno.test({
         const hasso = Dog.use().set({
             name: 'Hasso'
         })
+
+        const rex = Dog.use().set({
+            name: 'Rex'
+        })
+
+        const lessi = Dog.use().set({
+            name: 'Lessi'
+        })
+
         const robin = Human.use().set({
             name: 'Robin'
         })
@@ -183,7 +192,7 @@ Deno.test({
             assertEquals(hasso.human.uid, robin.uid)
         })
 
-        
+
         await t.step('get to-many (1) from this model', t => {
             //console.log('ROBIN DOGS',robin.dogs)
             assertEquals(robin.dogs[0].uid, hasso.uid)
@@ -192,6 +201,14 @@ Deno.test({
         await t.step('get to-many (1) from foreign model', t => {
             assertEquals(hasso.human.uid, robin.uid)
         })
+
+        await t.step('set to-many (1) -  with object.set()', t => {
+            finn.set({ dogs: [rex, lessi] })
+            assertEquals(store.get<ListItem<Dog>>(rex.uid)?.human, finn.uid)
+            assertEquals(store.get<ListItem<Dog>>(lessi.uid)?.human, finn.uid)
+        })
+
+        console.log(store.cache)
 
     }
 })
@@ -237,5 +254,8 @@ Deno.test({
             assertEquals(treeHouse.address.uid, niceAddress.uid)
         })
 
+
+
     }
 })
+
