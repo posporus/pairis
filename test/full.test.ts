@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.77.0/testing/asserts.ts";
+/* import { assertEquals } from "https://deno.land/std@0.77.0/testing/asserts.ts";
 
 import { Model, persist, PairisStore } from '../mod.ts'
 
@@ -101,8 +101,8 @@ Deno.test({
             //meal.amounts = [amount1]
             console.log(store.cache)
             console.log('pancake calories', pancake.getCalories())
-            /* console.log('Ingredien.modelStack',Ingredient.store)
-            console.log('store.modelStack',store.modelStack) */
+            
         })
     }
 })
+ */
