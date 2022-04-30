@@ -8,22 +8,20 @@ export class ListIngredients extends Component {
 
     render () {
         return (html`
-            <table class="table w-full">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
+            
                     ${this.props.ingredients.map(item => (
                         html`
                         <tr key=${item.uid}>
                         <td>${item.name}</td>
+                        <td>${item.calories}</td>
+                        <td>${item.fat}</td>
+                        <td>${item.protein}</td>
+                        <td>${item.carbs}</td>
+                        <td></td>
                     </tr>
                     `
                     ))}
-                </tbody>
-            </table>
+                    
             
         `
         )

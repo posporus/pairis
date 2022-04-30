@@ -1,5 +1,5 @@
 import { html, Component } from 'https://cdn.skypack.dev/htm/preact'
-
+import { AddAmount } from './add-amount.js'
 export class NewMeal extends Component {
 
     constructor(props) {
@@ -16,24 +16,24 @@ export class NewMeal extends Component {
     }
 
     async handleSubmit (event) {
-        await this.postData({ name: this.state.name })
-
+        event.preventDefault()
+        const r = await this.postData({ name: this.state.name })
+        const {meal} = await r.json()
         const checkbox = document.getElementById("my-modal")
         checkbox.checked = false
 
-        event.preventDefault();
+        this.props.onNew(meal)
+
     }
 
     async postData (data) {
-        await fetch('/meal/new', {
+        return await fetch('/meal/new', {
             method: 'post',
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json'
             },
         })
-
-        this.props.onNew()
 
     }
 
@@ -43,15 +43,32 @@ export class NewMeal extends Component {
             <input type="checkbox" id="my-modal" class="modal-toggle" />
             <div class="modal">
                 <div class="modal-box">
+            
                     <label for="my-modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
                     <h3 class="font-bold text-lg">${'Create new meal'}</h3>
                     <div class="divider"></div>
                     <form onSubmit=${this.handleSubmit}>
-                        <input class="input input-bordered" type="text" value=${this.state.name} onChange=${this.handleChange} />
+            
+                        <div class="form-control">
+                            <label class="label">
+                                <span>Name</span>
+                                <input class="input input-bordered" type="text" value=${this.state.name}
+                                    onChange=${this.handleChange} />
+                            </label>
+                        </div>
+            
+                        <div class="form-control">
+                            <label class="label">
+                                <span>Amount</span>
+                                <${AddAmount} />
+                            </label>
+                        </div>
+            
                         <div class="modal-action">
                             <button class="btn" type="submit">add</button>
                         </div>
                     </form>
+            
             
                 </div>
             </div>

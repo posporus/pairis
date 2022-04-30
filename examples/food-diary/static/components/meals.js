@@ -19,6 +19,13 @@ export class Meals extends Component {
         })
     }
 
+    updateMeals(meal) {
+        this.state.meals.push(meal)
+        this.setState({
+            ...this.state.meals
+        })
+    }
+
 /*     showEditor() {
         this.setState({
             editor: true
@@ -35,7 +42,7 @@ export class Meals extends Component {
         return (html`
             <div>
                 <${ListMeals} meals=${this.state.meals} />
-                <${NewMeal} show=${this.state.editor} onNew=${this.fetchData.bind(this)} />
+                <${NewMeal} show=${this.state.editor} onNew=${this.updateMeals.bind(this)} />
                 <label for="my-modal" class="btn modal-button btn-secondary fixed bottom-2 right-2">new</label>
             </div>
         `

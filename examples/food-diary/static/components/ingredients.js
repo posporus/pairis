@@ -1,6 +1,6 @@
 import { html, Component } from 'https://cdn.skypack.dev/htm/preact'
 import { ListIngredients } from './list-ingredients.js'
-import { NewIngredient } from './new-ingredient.js'
+import { AddIngredient } from './add-ingredient.js'
 
 export class Ingredients extends Component {
 
@@ -19,12 +19,33 @@ export class Ingredients extends Component {
         })
     }
 
+    updateIngredients(ingredient) {
+        this.state.ingredients.push(ingredient)
+        this.setState({
+            ...this.state.ingredients
+        })
+    }
+
     render () {
         return (html`
             <div>
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Calories</th>
+                        <th>Fat</th>
+                        <th>Protein</th>
+                        <th>Carbs</th>
+                        <th>-</th>
+                    </tr>
+                </thead>
+                <tbody>
                 <${ListIngredients} ingredients=${this.state.ingredients} />
-                <${NewIngredient} show=${this.state.editor} onNew=${this.fetchData.bind(this)} />
-                <label for="new-ingredient" class="btn modal-button btn-secondary fixed bottom-2 right-2">new</label>
+                <${AddIngredient} onNew=${this.updateIngredients.bind(this)}/>
+                </tbody>
+            </table>
+                
             </div>
         `
         )
