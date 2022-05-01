@@ -20,5 +20,5 @@ app.use(
     }),
 );
 
-const PORT =/*  Deno.env.get('PORT') || */ '8000'
-app.listen(`:${PORT}`);
+//const PORT =/*  Deno.env.get('PORT') || */ '8000'
+app.listen()
