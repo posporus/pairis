@@ -12,8 +12,6 @@ export class ListMeals extends Component {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Difficulty</th>
-                        <th>Time</th>
                         <th>Values</th>
                     </tr>
                 </thead>
@@ -21,10 +19,13 @@ export class ListMeals extends Component {
                     ${this.props.meals.map(item => (
                         html`
                         <tr key=${item.uid}>
-                        <td>${item.name}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td>${item.name}</td>                        
+                        <td>
+                            ${item.foodValues.calories}kcal |
+                            F:${item.foodValues.fat},
+                            P:${item.foodValues.protein},
+                            C:${item.foodValues.carbs}
+                        </td>
                     </tr>
                     `
                     ))}

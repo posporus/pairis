@@ -10,13 +10,13 @@ export class Meals extends Component {
         this.fetchData()
     }
 
-    fetchData () {
-        fetch('/meal/').then(result => {
-            result.json().then(json => {
-                console.log('this', this)
-                this.setState({ meals: json })
-            })
-        })
+    async fetchData () {
+        const result = await fetch('/meal/')
+        const meals = await result.json()
+        this.setState({ meals })
+        console.log('meals:',meals)
+
+        
     }
 
     updateMeals(meal) {
