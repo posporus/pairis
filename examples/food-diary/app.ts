@@ -5,9 +5,6 @@ import {
 
 import { ApiArea } from './areas/main.area.ts'
 
-
-
-// Create alosaur application
 const app = new App({
     areas: [ApiArea],
 })
@@ -21,4 +18,4 @@ app.use(
 );
 
 //const PORT =/*  Deno.env.get('PORT') || */ '8000'
-app.listen()
+app.listen(undefined, Deno.listen({ port: 8080 }))
