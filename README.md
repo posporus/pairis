@@ -35,6 +35,24 @@ tallAnimal.species  //'Giraffe'
 tallAnimal.legs     //4
 ```
 
+Pairis stores all the data into key/value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array. The above code will generate something like this (where uidXY is a valid UUID v4 key):
+
+```JSON
+{
+    "homes":["uid4","uid5"],
+
+    "uid4":{"name":"CoolWG","city":"Berlin"},
+    "uid5":{"name":"NiceHouse","city":"London"},
+
+    "flatmates":["uid1","uid2","uid3"],
+
+    "uid1":{"name":"Robin", "home":"uid4"},
+    "uid2":{"name":"Luca", "home":"uid4"},
+    "uid3":{"name":"Aron","home":"uid5"},
+}
+
+```
+
 ### Relationships
 Pairis uses 3 basic types of relationships, which can be combined in a logical manner:
 - One-To: points to one foreign object. The key is stored locally.
@@ -102,25 +120,6 @@ window.open() //window.opened => true
 window.close() //window.opened => false
 ```
 
-
-### Under the hood
-Pairis stores all the data into key/value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array.
-
-```JSON
-{
-    "homes":["uid4","uid5"],
-
-    "uid4":{"name":"CoolWG","city":"Berlin"},
-    "uid5":{"name":"NiceHouse","city":"London"},
-
-    "flatmates":["uid1","uid2","uid3"],
-
-    "uid1":{"name":"Robin", "home":"uid4"},
-    "uid2":{"name":"Luca", "home":"uid4"},
-    "uid3":{"name":"Aron","home":"uid5"},
-}
-
-```
 
 
 ## Persistence
