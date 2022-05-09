@@ -8,35 +8,23 @@ export class Meals extends Component {
         super(props);
         this.state = { meals: [], editor: false }
         this.fetchData()
+
+        //console.log(this.state.meals)
     }
 
     async fetchData () {
-        const result = await fetch('/meal/')
+        const result = await fetch('/api/meals/')
         const meals = await result.json()
         this.setState({ meals })
-        console.log('meals:',meals)
-
-        
+        console.log('meals:', meals)
     }
 
-    updateMeals(meal) {
+    updateMeals (meal) {
         this.state.meals.push(meal)
         this.setState({
             ...this.state.meals
         })
     }
-
-/*     showEditor() {
-        this.setState({
-            editor: true
-        })
-    }
-
-    hideEditor() {
-        this.setState({
-            editor: false
-        })
-    } */
 
     render () {
         return (html`

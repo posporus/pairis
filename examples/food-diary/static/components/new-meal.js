@@ -47,7 +47,7 @@ export class NewMeal extends Component {
     }
 
     async postData (data) {
-        return await fetch('/meal/new', {
+        return await fetch('/api/meals/new', {
             method: 'post',
             body: JSON.stringify(data),
             headers: {

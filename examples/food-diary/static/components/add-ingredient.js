@@ -32,14 +32,14 @@ export class AddIngredient extends Component {
         const r = await this.postData({ ...this.state })
         const j = await r.json()
         console.log('json',j)
-        this.props.onNew(j.ingredient)
+        this.props.onNew(j)
         this.resetForm()
         
     }
 
     async postData (data) {
         console.log('ingr data', data)
-        return await fetch('/ingredient/new', {
+        return await fetch('/api/ingredients/new', {
             method: 'post',
             body: JSON.stringify(data),
             headers: {

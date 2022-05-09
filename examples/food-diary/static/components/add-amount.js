@@ -16,9 +16,9 @@ export class AddAmount extends Component {
     }
 
     fetchData () {
-        fetch('/ingredient/').then(result => {
+        fetch('/api/ingredients/').then(result => {
             result.json().then(json => {
-                console.log('this', this)
+                //console.log('this', this)
                 this.setState({ ingredients: json })
             })
         })

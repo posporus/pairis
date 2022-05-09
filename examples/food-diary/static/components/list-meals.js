@@ -4,6 +4,7 @@ export class ListMeals extends Component {
 
     constructor(props) {
         super(props);
+        //console.log('list-meals',props.meals)
     }
 
     render () {
