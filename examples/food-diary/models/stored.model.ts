@@ -1,6 +1,6 @@
 import { Model, PairisStore, persist } from '../deps.ts'
 
-const store = new PairisStore(localStorage)
+const store = new PairisStore()
 
 @persist(store)
 
