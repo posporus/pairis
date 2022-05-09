@@ -35,7 +35,7 @@ tallAnimal.species  //'Giraffe'
 tallAnimal.legs     //4
 ```
 
-Pairis stores all the data into key/value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array. The above code will generate something like this (where uidXY is a valid UUID v4 key):
+Pairis stores all the data into key/value pairs. It uses 'lists' to combine all datasets of a model. Each dataset is stored under a unique identifier which is generated automatically. The keys are in turn stored in a list, which is basically an array. Here is an example of what this could look like (where uidXY is a valid UUID v4 key):
 
 ```JSON
 {
