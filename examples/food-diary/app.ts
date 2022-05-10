@@ -97,17 +97,24 @@ front.get("/", async (ctx) => {
 
 front.get("/:static", async (ctx) => {
     console.log('static request', ctx.params.static)
-    const file = await Deno.readFile(`./static/${ctx.params.static}`)
-    const value = await etag.calculate(file);
-    console.log(value)
-    //ctx.response.type = 'module'
-    //ctx.response.headers.set("ETag", value);
-    if(ctx.params.static.endsWith('.png')) {
-        ctx.response.headers.set("content-type", 'image/png');
-    }
-    else ctx.response.headers.set("content-type", 'application/javascript');
+    try {
+        const file = await Deno.readFile(`./static/${ctx.params.static}`)
+        const value = await etag.calculate(file);
+        console.log(value)
+        //ctx.response.type = 'module'
+        //ctx.response.headers.set("ETag", value);
+        if (ctx.params.static.endsWith('.png')) {
+            ctx.response.headers.set("content-type", 'image/png');
+        }
+        else ctx.response.headers.set("content-type", 'application/javascript');
 
-    ctx.response.body = file
+        ctx.response.body = file
+    }
+    catch {
+        ctx.response.status = 404
+        ctx.response.body = 'not found'
+    }
+   
 
 })
 
