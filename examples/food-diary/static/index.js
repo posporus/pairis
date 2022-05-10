@@ -1,8 +1,8 @@
 import { render, html, Component, h } from 'https://cdn.skypack.dev/htm/preact'
 import Router, { Link } from 'https://cdn.skypack.dev/preact-router'
-import { Home } from './components/home.js'
-import { Meals } from './components/meals.js'
-import { Ingredients } from './components/ingredients.js'
+import { Home } from './home.js'
+import { Meals } from './meals.js'
+import { Ingredients } from './ingredients.js'
 
 class App extends Component {
     render () {

@@ -4,7 +4,7 @@ export class Home extends Component {
         <div class="hero">
             <div class="hero-content flex flex-col justify-center text-center">
                 <h1 class="text-5xl font-bold">Pairis meal database demo</h1>
-                <img src="./img/pairis_socks.png" />
+                <img src="./pairis_socks.png" />
                 <p class="py-6">
                     This is an simple receipe database demo.
                 </p>
